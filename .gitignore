@@ -33,6 +33,7 @@
 *.EXE
 *.out
 *.swp
+*.SWP
 *.obj
 *.OBJ
 *.app
