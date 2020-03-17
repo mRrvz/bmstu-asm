@@ -1,5 +1,6 @@
 PUBLIC newline
 PUBLIC prnt_matrix
+PUBLIC space
 
 EXTRN n: byte
 EXTRN m: byte
@@ -40,13 +41,21 @@ prnt_matrix proc near
         call newline
 
         mov cl, bl
-        sub bl, 1
+        dec bl
         mov ah, 2
         loop prnt_col
 
     ret
 
 prnt_matrix endp
+
+space proc near
+    mov ah, 2
+    mov dl, " "
+    int 21h
+
+    ret
+space endp
 
 SEGCODE ENDS
 END

@@ -7,52 +7,57 @@ EXTRN matrix: byte
 SEGCODE SEGMENT PARA PUBLIC 'CODE'
     assume CS:SEGCODE
 change_max_min proc near
-    mov bl, byte ptr[m]
-    mov al, 0
+    mov al, byte ptr[n]
+    mov bx, 0
 
-    lbl_row:
-        mov si, ax
-        mov di, ax
+    lbl_col:
+        mov si, bx
+        mov di, bx
 
-        mov dl, byte ptr[matrix + ax]
-        mov dh, byte ptr[matrix + ax]
-        mov cl, byte ptr[n]
+        mov dl, byte ptr[matrix + bx]
+        mov dh, byte ptr[matrix + bx]
+        mov cl, byte ptr[m]
 
-        lbl_col:
-            cmp dl, byte ptr[matrix + ax]
+        lbl_row:
+            cmp byte ptr[matrix + bx], dl
             jge maxlbl
-            cmp dh, byte ptr[matrix + ax]
+
+            go_back1:
+            cmp byte ptr[matrix + bx], dh
             jle minlbl
-            add al, n
 
-            loop lbl_col
+            go_back2:
+            add bl, byte ptr[n]
 
-        mov [matrix + si], dh
-        mov [matrix + di], dl
+            loop lbl_row
 
-        mov dl, 9
+        mov [matrix + si], dl
+        mov [matrix + di], dh
+
+        mov cl, al
+        dec al
+
+        mov dl, byte ptr[n]
         sub dl, al
-        mov al, dl
+        mov bl, dl
 
-        mov cl, bl
-        sub bl, 1
-
-        loop lbl_row
+        loop lbl_col
 
     ret
-change_max_min endp
 
 minlbl:
-    mov dl, byte ptr[matrix]
-    mov si, ax
+    mov dh, byte ptr[matrix + bx]
+    mov si, bx
 
-    ret
+    jmp go_back2
 
 maxlbl:
-    mov dh, byte ptr[matrix]
-    mov di, ax
+    mov dl, byte ptr[matrix + bx]
+    mov di, bx
 
-    ret
+    jmp go_back1
+
+change_max_min endp
 
 SEGCODE ENDS
 END
