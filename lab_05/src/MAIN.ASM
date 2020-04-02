@@ -1,5 +1,7 @@
 EXTRN print_sign: near
 EXTRN print_unsign: near
+EXTRN print_bin: near
+EXTRN print_hex: near
 EXTRN read_numb: near
 EXTRN newline: near
 
@@ -40,8 +42,8 @@ main:
     mov f_ptr[0], read_numb
     mov f_ptr[2], print_sign
     mov f_ptr[4], print_unsign
-    ;mov f_ptr[6], to_bin_unsign
-    ;mov f_ptr[8], to_hex_sign
+    mov f_ptr[6], print_bin
+    mov f_ptr[8], print_hex
     mov f_ptr[10], exit
 
     menu:

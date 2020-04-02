@@ -1,9 +1,14 @@
 PUBLIC print_sign
+PUBLIC print_bin
 PUBLIC print_unsign
 PUBLIC newline
 
 EXTRN real_numb: near
 EXTRN number: near
+EXTRN bin_len: byte
+EXTRN bin_str: byte
+EXTRN hex_str: byte
+EXTRN hex_len: byte
 EXTRN unsign_len: byte
 EXTRN unsign_str: near
 
@@ -14,6 +19,16 @@ SEGDATA SEGMENT PARA PUBLIC 'DATA'
                db "$"
                 
     unsign_msg db "Unsigned number:"
+               db 10
+               db 13
+               db "$"
+
+    bin_msg    db "Unsigned binary:"
+               db 10
+               db 13
+               db "$"
+
+    hex_msg    db "Signed hexadecimal:"
                db 10
                db 13
                db "$"
@@ -48,7 +63,7 @@ print_unsign proc near
     int 21h
 
     mov dx, offset unsign_str
-    add dx, 5
+    add dx, 6
     mov al, unsign_len
     sub dl, al
 
@@ -70,6 +85,42 @@ print_unsign proc near
         ret
 
 print_unsign endp
+
+
+print_bin proc near
+    call newline
+
+    mov ah, 9
+    mov dx, offset bin_msg
+    int 21h
+
+    mov dx, offset bin_str
+    int 21h
+
+    call newline
+    ret
+
+print_bin endp
+
+
+print_hex proc near
+    call newline
+    
+    mov ah, 9
+    mov dx, offset hex_msg
+    int 21h
+
+    mov dx, offset hex_str
+    add dx, 5
+    mov al, hex_len
+    sub dl, al
+    int 21h
+
+    call newline
+    ret
+
+print_hex endp
+
 
 newline proc near
     mov ah, 2
