@@ -99,6 +99,7 @@ my_9h proc
     stosw
 
     quit:
+        ;popf
         pop ds
         pop es
 
