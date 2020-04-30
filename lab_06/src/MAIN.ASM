@@ -17,10 +17,7 @@ my_9h proc
 
     push es
     push ds
-    push cs
     pushf
-
-    pop ds
 
     call cs:old_9h
 
@@ -99,7 +96,6 @@ my_9h proc
     stosw
 
     quit:
-        ;popf
         pop ds
         pop es
 
