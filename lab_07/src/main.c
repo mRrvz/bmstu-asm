@@ -33,7 +33,7 @@ int main(void)
        но я сдал и исправлять не буду :) */
 
     copy(len, string, string_copy);
-    printf("ORIGINAL: %s\nCOPY: %s", string_copy, string);
+    printf("ORIGINAL: %s\nCOPY: %s", string, string_copy);
 
     return 0;
 }
