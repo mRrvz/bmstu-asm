@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     {
         image = bytes_head;
 
-        for (int i = 0; i < (width * height * n) / QWORD; i++)
+        for (int i = 0; i < width * height * n / QWORD; i++)
         {
             __asm__ (
                 ".intel_syntax noprefix\n\t"
