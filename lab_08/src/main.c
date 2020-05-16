@@ -2,61 +2,65 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include <stdio.h>
-#include <string.h>
 
-#include "lib/stb_image.h"
-#include "lib/stb_image_write.h"
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
+#define QWORD 8
+#define MAX_QLTY 100
 
-#define N 100000
-#define true 1
-#define __JPG 3
-#define __PNG 4
+#define _JPG 3
+#define _PNG 4
 
-int main(void)
+#define OK 0
+#define PIXEL_STEP 8
+#define MAX_BUFF_SIZE 30
+#define SAVE_PATH "temp_pht/%d.jpg"
+
+int main(int argc, char *argv[])
 {
     setbuf(stdout, NULL);
 
     int width, height, n;
-    unsigned char *image = stbi_load("1.jpg", &width, &height, &n, __JPG);
-    unsigned char *original = stbi_load("1.jpg", &width, &height, &n, __JPG);
+    unsigned char *image = stbi_load(argv[1], &width, &height, &n, _JPG);
+    unsigned char *bytes_head = image;
 
-    int32_t x = 0;
-    printf("%d %d %d\n", width, height, n);
-    char img_name[300];
-    printf("%zu", sizeof(*(image + 0)));
+    char img_name[MAX_BUFF_SIZE];
+    unsigned char *qword_ptr = malloc(QWORD);
+    memset(qword_ptr, PIXEL_STEP, QWORD);
 
-    for (int j = 0; j < 128; j++)
+    for (int j = 0; j < 256 / PIXEL_STEP; j++)
     {
-        image = original;
+        image = bytes_head;
 
-        for (int i = 0; i < (width * height * n + 1) / 64 - 64; i++)
+        for (int i = 0; i < (width * height * n) / QWORD; i++)
         {
-            //int *x = malloc(sizeof(char) * 64);
-            //if (x == NULL)
-
             __asm__ (
                 ".intel_syntax noprefix\n\t"
-                "movq mm0, %0\n\t"
+                "movq mm0, [%1]\n\t"
+                "movq mm1, [%2]\n\t"
+                "paddusb mm0, mm1\n\t"
+                "movq [%1], mm0\n\t"
                 : "=r" (image)
-                : "r" (height)
-                : "ecx", "eax"
+                : "r" (image), "r" (qword_ptr)
+                : "mm0", "mm1"
             );
 
-            //*(image + i) = *(image + i) = j % (*(original + i) + 1);
-            //stbi_image_free(image);
-            //printf("%d ", *(image + i));
-            image += 64;
-            //printf("%d %d\n", i, j);
+            image += QWORD;
         }
 
-        sprintf(img_name, "jpgs/%d.jpg", j);
-        //stbi_write_jpg(img_name, width, height, n, image, 100);
+        fprintf(stdout, "%d picture finished\n", j + 1);
+
+        image = bytes_head;
+        snprintf(img_name, MAX_BUFF_SIZE - 1, SAVE_PATH, j);
+        stbi_write_jpg(img_name, width, height, n, image, MAX_QLTY);
     }
 
-    //stbi_write_jpg("4.jpg", width, height, n, image, 100);
-    //stbi_image_free(image);
-    //stbi_image_free(original);
+    stbi_image_free(image);
+    free(qword_ptr);
 
-    return 0;
+    fprintf(stdout, "Image processing completed, making gif...\n");
+    system("convert -delay 6 -loop 0 $(ls temp_pht -1 | sort -n | awk '{print \"temp_pht/\"$1}') gif.gif");
+
+    return OK;
 }
