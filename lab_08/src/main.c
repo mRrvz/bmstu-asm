@@ -7,15 +7,16 @@
 #include "stb/stb_image_write.h"
 
 #define QWORD 8
-#define MAX_QLTY 100
 
+#define MAX_QLTY 100
+#define PIXEL_STEP 8
 #define _JPG 3
 #define _PNG 4
 
-#define OK 0
-#define PIXEL_STEP 8
 #define MAX_BUFF_SIZE 30
 #define SAVE_PATH "temp_pht/%d.jpg"
+
+#define OK 0
 
 int main(int argc, char *argv[])
 {
@@ -25,9 +26,11 @@ int main(int argc, char *argv[])
     unsigned char *image = stbi_load(argv[1], &width, &height, &n, _JPG);
     unsigned char *bytes_head = image;
 
-    char img_name[MAX_BUFF_SIZE];
     unsigned char *qword_ptr = malloc(QWORD);
     memset(qword_ptr, PIXEL_STEP, QWORD);
+
+    char img_name[MAX_BUFF_SIZE];
+    system("mkdir temp_pht");
 
     for (int j = 0; j < 256 / PIXEL_STEP; j++)
     {
@@ -61,6 +64,7 @@ int main(int argc, char *argv[])
 
     fprintf(stdout, "Image processing completed, making gif...\n");
     system("convert -delay 6 -loop 0 $(ls temp_pht -1 | sort -n | awk '{print \"temp_pht/\"$1}') gif.gif");
+    system("rm -rf temp_pht");
 
     return OK;
 }
