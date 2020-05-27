@@ -1,20 +1,14 @@
 #include <stdio.h>
+#include <string.h>
 
 int main(int argc, char *argv[], char *arge[])
 {
-    for (int i = 0; i < argc; i++)
-    {
-        printf("%s\n", argv[i]);
-    }
+    char buffer[] = "SHELL=/bin/zsh";
 
-    //int arr[16];
-
-    /* #pragma omp parallel for
-    /for (int i = 0; i < 16; i++)
+    if (!strcmp(*(arge + 27), buffer))
     {
-        *(arr + i) = i;
+        printf("Access granted");
     }
-    */
 
     return 0;
 }
