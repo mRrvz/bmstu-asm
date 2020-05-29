@@ -3,13 +3,12 @@
 
 int main(int argc, char *argv[], char *arge[])
 {
-    char buffer[] = "SHELL=/bin/zsh";
+    char buffer[] = "SHELL=/usr/bin/zsh";
 
-    if (!strcmp(*(arge + 27), buffer))
+    if (!strcmp(*(arge + 26), buffer))
     {
         printf("Access granted");
     }
 
-    return 0;
+    return 0; 
 }
-
